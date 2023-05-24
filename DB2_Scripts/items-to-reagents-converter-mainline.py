@@ -92,7 +92,7 @@ with open('ModifiedCraftingReagentSlot.csv') as f:
     for row in reader:
         slot_id = int(row['ID'])
         slot_type = int(row['ReagentType'])
-        if slot_type > 1 and slot_id in reagent_slot_to_items:
+        if slot_type != 1 and slot_id in reagent_slot_to_items:
             del reagent_slot_to_items[slot_id]
 
 with open('ModifiedCraftingSpellSlot.csv') as f:
