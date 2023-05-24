@@ -5,5 +5,6 @@
 ## Author: plusmouse
 ## OptionalDeps: Auctionator
 
+Objects.lua
 Data_Classic.lua
 Main_Classic.lua
