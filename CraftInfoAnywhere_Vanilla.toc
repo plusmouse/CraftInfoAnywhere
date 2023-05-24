@@ -1,0 +1,9 @@
+## Interface: 11403
+## Title: Craft Info Anywhere
+## Notes: Shows the reagents needed to craft an item
+## Version: @project-version@
+## Author: plusmouse
+## OptionalDeps: Auctionator
+
+Data_Classic.lua
+Main_Classic.lua

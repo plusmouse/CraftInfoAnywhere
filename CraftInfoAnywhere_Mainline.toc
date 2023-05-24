@@ -3,7 +3,7 @@
 ## Notes: Shows the cost (more or less) of crafting an item and the minimum reagents
 ## Version: @project-version@
 ## Author: plusmouse
+## OptionalDeps: Auctionator
 
-Objects.lua
 Data_Mainline.lua
 Main_Mainline.lua

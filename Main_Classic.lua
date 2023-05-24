@@ -1,10 +1,7 @@
 local function ShowInfo(tooltip)
-  local _, itemLink = TooltipUtil.GetDisplayedItem(tooltip)
-  if itemLink == nil then
-    return
-  end
-  local itemLevel = GetDetailedItemLevelInfo(itemLink)
+  local _, itemLink = tooltip:GetItem()
   local itemID = GetItemInfoInstant(itemLink)
+
   local recipeDetails = CraftInfoAnywhere.Data[itemID]
 
   if recipeDetails then 
@@ -26,11 +23,5 @@ local function ShowInfo(tooltip)
   end
 end
 
-local function OnTooltipSetItem(tooltip, data)
-  if tooltip ~= GameTooltip then
-    return
-  end
-
-  ShowInfo(tooltip)
-end
-TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, OnTooltipSetItem)
+GameTooltip:HookScript("OnTooltipSetItem", ShowInfo)
+ItemRefTooltip:HookScript("OnTooltipSetItem", ShowInfo)

@@ -1,0 +1,3 @@
+package-as: CraftInfoAnywhere
+ignore:
+  - DB2_Scripts
