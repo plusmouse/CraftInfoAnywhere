@@ -120,6 +120,7 @@ with open('ModifiedCraftingSpellSlot.csv') as f:
 for spell_id in is_enchant:
     if spell_id in spell_to_reagents:
         spell_to_reagents[spell_id].append(([EnchantingVellumID], 1))
+        spell_to_quantity[spell_id] = 1
 
 # Assumes spell_id in spell_to_item and spell_id in spell_to_reagents
 def reagents_details_str(spell_id):
