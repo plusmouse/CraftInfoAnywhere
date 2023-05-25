@@ -1,5 +1,8 @@
 local function ShowInfo(tooltip)
   local _, itemLink = tooltip:GetItem()
+  if itemLink == nil then
+    return
+  end
   local itemID = GetItemInfoInstant(itemLink)
 
   local recipeDetails = CraftInfoAnywhere.Data[itemID]
@@ -20,6 +23,7 @@ local function ShowInfo(tooltip)
     for _, nameAndQuantity in ipairs(details) do
       tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
     end
+    tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
   end
 end
 

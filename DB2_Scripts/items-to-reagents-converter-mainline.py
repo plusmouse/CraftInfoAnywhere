@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 import csv
+import math
 
 spell_to_item = {}
+spell_to_quantity = {}
 
 # Get the DF quality items as they use a different stat to connect them to the
 # result
@@ -33,6 +35,7 @@ with open('CraftingDataEnchantQuality.csv', newline='') as f:
         item_id = int(row['ItemID'])
         crafting_ids_to_item[crafting_id].append(item_id)
 
+mcc_to_spell_id = {}
 
 # Connect spell effects which make icons with the item
 with open('SpellEffect.csv', newline='') as f:
@@ -40,6 +43,7 @@ with open('SpellEffect.csv', newline='') as f:
     for row in reader:
         effect = int(row['Effect'])
         spell_id = int(row['SpellID'])
+        spell_to_quantity[spell_id] = math.ceil(float(row['EffectBasePointsF']))
         # Most items just have the data stored in the row
         if effect != 288:
             item_id = int(row['EffectItemType'])
@@ -50,6 +54,7 @@ with open('SpellEffect.csv', newline='') as f:
         elif effect == 288:
             misc_effect_0 = int(row['EffectMiscValue_0'])
             if misc_effect_0 in crafting_ids_to_item:
+                mcc_to_spell_id[misc_effect_0] = spell_id
                 item_id = crafting_ids_to_item[misc_effect_0][0]
                 spell_to_item[spell_id] = crafting_ids_to_item[misc_effect_0]
 
@@ -110,6 +115,9 @@ with open('ModifiedCraftingSpellSlot.csv') as f:
 def reagents_details_str(spell_id):
     item_ids = spell_to_item[spell_id]
     reagents = spell_to_reagents[spell_id]
+    quantity = 1
+    if spell_id in spell_to_quantity:
+        quantity = spell_to_quantity[spell_id]
     result = ""
     for item_id in item_ids:
         result = result + "[" + str(item_id) + "]={spell=" + str(spell_id) + ",reagents={"
@@ -118,7 +126,7 @@ def reagents_details_str(spell_id):
             for r in slot[0]:
                 result = result + str(r) + ","
             result = result + "},quantity=" + str(slot[1]) + "},"
-        result = result + "}},"
+        result = result + "},quantity=" + str(quantity) + "},"
     return result
 
 ordered_spells = []
@@ -131,5 +139,5 @@ ordered_spells.sort()
 print("CraftInfoAnywhere.Data = {")
 for spell_id in ordered_spells:
     print(reagents_details_str(spell_id))
-#    tmp = reagents_details_str(spell_id)
+    #tmp = reagents_details_str(spell_id)
 print("}")

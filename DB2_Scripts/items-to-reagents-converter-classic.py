@@ -2,6 +2,7 @@
 import csv
 
 spell_to_item = {}
+spell_to_quantity = {}
 
 # Connect spell effects which make icons with the item
 with open('SpellEffect.csv', newline='') as f:
@@ -12,6 +13,11 @@ with open('SpellEffect.csv', newline='') as f:
         item_id = int(row['EffectItemType'])
         if item_id != 0:
             spell_to_item[spell_id] = [item_id]
+            base_points = int(row['EffectBasePoints'])
+            bonus_coefficient = int(row['EffectBonusCoefficient'])
+            group_coefficient = int(row['GroupSizeBasePointsCoefficient'])
+            spell_to_quantity[spell_id] = base_points + bonus_coefficient + group_coefficient
+            
 
 spell_to_reagents = {}
 
@@ -32,6 +38,7 @@ with open('SpellReagents.csv') as f:
 def reagents_details_str(spell_id):
     item_ids = spell_to_item[spell_id]
     reagents = spell_to_reagents[spell_id]
+    quantity = spell_to_quantity[spell_id]
     result = ""
     for item_id in item_ids:
         result = result + "[" + str(item_id) + "]={spell=" + str(spell_id) + ",reagents={"
@@ -40,7 +47,7 @@ def reagents_details_str(spell_id):
             for r in slot[0]:
                 result = result + str(r) + ","
             result = result + "},quantity=" + str(slot[1]) + "},"
-        result = result + "}},"
+        result = result + "},quantity=" + str(quantity) + "},"
     return result
 
 ordered_spells = []
