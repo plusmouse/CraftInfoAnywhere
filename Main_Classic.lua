@@ -1,3 +1,30 @@
+local function GetVellum(data)
+  local vellumForClass = Auctionator.CraftingInfo.EnchantVellums[data.itemClass]
+  if vellumForClass == nil then
+    return nil
+  end
+
+  -- Find the cheapest vellum that will work
+  local vellumCost
+  local anyMatch = false
+  for vellumItemID, vellumLevel in pairs(vellumForClass) do
+    if data.level <= vellumLevel then
+      return vellumItemID
+    end
+  end
+end
+
+local function GetCraftCost(details)
+  local total = 0
+  for _, entry in ipairs(details) do
+    local price = Auctionator.API.v1.GetAuctionPriceByItemID("Craft Info Anywhere", entry.itemID)
+    if price then
+      total = total + price
+    end
+  end
+  return total
+end
+
 local function ShowInfo(tooltip)
   local _, itemLink = tooltip:GetItem()
   if itemLink == nil then
@@ -14,9 +41,18 @@ local function ShowInfo(tooltip)
     for _, rData in ipairs(recipeDetails.reagents) do
       local name = GetItemInfo(rData.items[1])
       if name ~= nil then
-        table.insert(details, {name = name, quantity = rData.quantity})
+        table.insert(details, {name = name, quantity = rData.quantity, itemID = rData.items[1]})
       else
-        table.insert(details, {name = "Pending...", quantity = rData.quantity})
+        table.insert(details, {name = "Pending...", quantity = rData.quantity, itemID = rData.items[1]})
+      end
+    end
+    if Auctionator and Auctionator.CraftingInfo.EnchantSpellsToItemData then
+      local spellData = Auctionator.CraftingInfo.EnchantSpellsToItemData[recipeDetails.spell]
+      if spellData then
+        local vellumID = GetVellum(spellData)
+        if vellumID ~= nil then
+          table.insert(details, {name = GetItemInfo(vellumID) or "", quantity = 1, itemID = vellumID})
+        end
       end
     end
     table.sort(details, function(a, b) return a.name < b.name end)
@@ -24,6 +60,9 @@ local function ShowInfo(tooltip)
       tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
     end
     tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
+    if Auctionator and Auctionator.API then
+      tooltip:AddDoubleLine("Reagents Value:", WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(details)), true))
+    end
   end
 end
 
