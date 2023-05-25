@@ -1,3 +1,37 @@
+-- Get vendor or auction cost of an item depending on which is available
+local function GetCostByItemID(itemID, multiplier)
+  local vendorPrice = Auctionator.API.v1.GetVendorPriceByItemID(AUCTIONATOR_L_REAGENT_SEARCH, itemID)
+  local auctionPrice = Auctionator.API.v1.GetAuctionPriceByItemID(AUCTIONATOR_L_REAGENT_SEARCH, itemID)
+
+  local unitPrice = vendorPrice or auctionPrice
+
+  if unitPrice ~= nil then
+    return multiplier * unitPrice
+  end
+  return 0
+end
+
+local function GetByMinCostOption(reagents, multiplier)
+  local min = 0
+  for _, itemID in ipairs(reagents) do
+    if itemID ~= nil then
+      local newValue = GetCostByItemID(itemID, multiplier)
+      if newValue ~= 0 and (min == 0 or newValue < min) then
+        min = newValue
+      end
+    end
+  end
+  return min
+end
+
+local function GetCraftCost(reagents)
+  local total = 0
+  for _, r in ipairs(reagents) do
+    total = total + GetByMinCostOption(r.items, r.quantity)
+  end
+  return total
+end
+
 local function ShowInfo(tooltip)
   local _, itemLink = TooltipUtil.GetDisplayedItem(tooltip)
   if itemLink == nil then
@@ -24,6 +58,9 @@ local function ShowInfo(tooltip)
       tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
     end
     tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
+    if Auctionator and Auctionator.API then
+      tooltip:AddDoubleLine("Reagents Value:", WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(recipeDetails.reagents)), true))
+    end
   end
 end
 
