@@ -42,7 +42,6 @@ local function ShowInfo(tooltip)
   local recipeDetails = CraftInfoAnywhere.Data[itemID]
 
   if recipeDetails then 
-    --tooltip:AddDoubleLine("Basic Craft Cost", GetMoneyString(GetCost(recipeDetails.reagents)), nil, nil, nil, 1, 1, 1)
     tooltip:AddLine("Reagents Required:")
     local details = {}
     for _, rData in ipairs(recipeDetails.reagents) do
@@ -53,6 +52,7 @@ local function ShowInfo(tooltip)
         table.insert(details, {name = "Pending...", quantity = rData.quantity})
       end
     end
+
     table.sort(details, function(a, b) return a.name < b.name end)
     for _, nameAndQuantity in ipairs(details) do
       tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
