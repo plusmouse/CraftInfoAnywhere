@@ -4,6 +4,8 @@ import math
 
 spell_to_item = {}
 spell_to_quantity = {}
+is_enchant = {}
+EnchantingVellumID = 38682
 
 # Get the DF quality items as they use a different stat to connect them to the
 # result
@@ -44,19 +46,21 @@ with open('SpellEffect.csv', newline='') as f:
         effect = int(row['Effect'])
         spell_id = int(row['SpellID'])
         spell_to_quantity[spell_id] = math.ceil(float(row['EffectBasePointsF']))
-        # Most items just have the data stored in the row
-        if effect != 288:
-            item_id = int(row['EffectItemType'])
-            if item_id != 0:
-                spell_to_item[spell_id] = [item_id]
         # DF items don't, so we special case and use the values generated above
         # to figure out the items it could be
-        elif effect == 288:
+        if effect == 288 or effect == 301:
             misc_effect_0 = int(row['EffectMiscValue_0'])
             if misc_effect_0 in crafting_ids_to_item:
                 mcc_to_spell_id[misc_effect_0] = spell_id
                 item_id = crafting_ids_to_item[misc_effect_0][0]
                 spell_to_item[spell_id] = crafting_ids_to_item[misc_effect_0]
+                if effect == 301:
+                    is_enchant[spell_id] = True
+        # Most items just have the data stored in the row
+        elif effect != 288:
+            item_id = int(row['EffectItemType'])
+            if item_id != 0:
+                spell_to_item[spell_id] = [item_id]
 
 spell_to_reagents = {}
 
@@ -110,6 +114,10 @@ with open('ModifiedCraftingSpellSlot.csv') as f:
             if spell_id not in spell_to_reagents:
                 spell_to_reagents[spell_id] = []
             spell_to_reagents[spell_id].append((reagent_slot_to_items[slot_id], count))
+
+for spell_id in is_enchant:
+    if spell_id in spell_to_reagents:
+        spell_to_reagents[spell_id].append(([EnchantingVellumID], 1))
 
 # Assumes spell_id in spell_to_item and spell_id in spell_to_reagents
 def reagents_details_str(spell_id):
