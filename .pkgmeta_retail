@@ -4,3 +4,5 @@ ignore:
   - "*_Classic*"
   - "*_Vanilla*"
   - "*_Wrath*"
+required-dependencies:
+  - auctionator

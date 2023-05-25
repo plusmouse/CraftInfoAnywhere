@@ -1,3 +1,5 @@
 package-as: CraftInfoAnywhere
 ignore:
   - DB2_Scripts
+required-dependencies:
+  - auctionator
