@@ -42,23 +42,29 @@ local function ShowInfo(tooltip)
   local recipeDetails = CraftInfoAnywhere.Data[itemID]
 
   if recipeDetails then 
-    tooltip:AddLine("Reagents Required:")
-    local details = {}
-    for _, rData in ipairs(recipeDetails.reagents) do
-      local name = GetItemInfo(rData.items[1])
-      if name ~= nil then
-        table.insert(details, {name = name, quantity = rData.quantity})
-      else
-        table.insert(details, {name = "Pending...", quantity = rData.quantity})
+    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS) then
+      tooltip:AddLine("Reagents Required:")
+      local details = {}
+      for _, rData in ipairs(recipeDetails.reagents) do
+        local name = GetItemInfo(rData.items[1])
+        if name ~= nil then
+          table.insert(details, {name = name, quantity = rData.quantity})
+        else
+          table.insert(details, {name = "Pending...", quantity = rData.quantity})
+        end
+      end
+      table.sort(details, function(a, b) return a.name < b.name end)
+      for _, nameAndQuantity in ipairs(details) do
+        tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
       end
     end
-    table.sort(details, function(a, b) return a.name < b.name end)
-    for _, nameAndQuantity in ipairs(details) do
-      tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
+    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.MADE_COUNT) then
+      tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
     end
-    tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
-    if Auctionator and Auctionator.API then
-      tooltip:AddDoubleLine("Reagents Value:", WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(recipeDetails.reagents)), true))
+    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PRICES) then
+      if Auctionator and Auctionator.API then
+        tooltip:AddDoubleLine("Reagents Value:", WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(recipeDetails.reagents)), true))
+      end
     end
   end
 end

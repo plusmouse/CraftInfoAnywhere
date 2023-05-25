@@ -34,9 +34,8 @@ local function ShowInfo(tooltip)
 
   local recipeDetails = CraftInfoAnywhere.Data[itemID]
 
-  if recipeDetails then 
+  if recipeDetails then
     --tooltip:AddDoubleLine("Basic Craft Cost", GetMoneyString(GetCost(recipeDetails.reagents)), nil, nil, nil, 1, 1, 1)
-    tooltip:AddLine("Reagents Required:")
     local details = {}
     local setEnchantVellum = false
     for _, rData in ipairs(recipeDetails.reagents) do
@@ -57,17 +56,27 @@ local function ShowInfo(tooltip)
         end
       end
     end
+
     table.sort(details, function(a, b) return a.name < b.name end)
-    for _, nameAndQuantity in ipairs(details) do
-      tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
+    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS) then
+      tooltip:AddLine("Reagents Required:")
+      for _, nameAndQuantity in ipairs(details) do
+        tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
+      end
     end
-    if setEnchantVellum then
-      tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(1))
-    else
-      tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
+
+    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.MADE_COUNT) then
+      if setEnchantVellum then
+        tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(1))
+      else
+        tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
+      end
     end
-    if Auctionator and Auctionator.API then
-      tooltip:AddDoubleLine("Reagents Value:", WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(details)), true))
+
+    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PRICES) then
+      if Auctionator and Auctionator.API then
+        tooltip:AddDoubleLine("Reagents Value:", WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(details)), true))
+      end
     end
   end
 end
