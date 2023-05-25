@@ -52,7 +52,6 @@ local function ShowInfo(tooltip)
         table.insert(details, {name = "Pending...", quantity = rData.quantity})
       end
     end
-
     table.sort(details, function(a, b) return a.name < b.name end)
     for _, nameAndQuantity in ipairs(details) do
       tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
