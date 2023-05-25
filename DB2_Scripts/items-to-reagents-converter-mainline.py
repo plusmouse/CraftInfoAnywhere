@@ -61,6 +61,8 @@ with open('SpellEffect.csv', newline='') as f:
             item_id = int(row['EffectItemType'])
             if item_id != 0:
                 spell_to_item[spell_id] = [item_id]
+                if effect  == 53:
+                    is_enchant[spell_id] = True
 
 spell_to_reagents = {}
 
