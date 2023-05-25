@@ -64,7 +64,7 @@ local function ShowInfo(tooltip)
 end
 
 local function OnTooltipSetItem(tooltip, data)
-  if tooltip ~= GameTooltip then
+  if tooltip ~= GameTooltip and tooltip ~= ItemRefTooltip then
     return
   end
 
