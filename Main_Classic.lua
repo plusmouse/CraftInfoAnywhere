@@ -38,6 +38,7 @@ local function ShowInfo(tooltip)
     --tooltip:AddDoubleLine("Basic Craft Cost", GetMoneyString(GetCost(recipeDetails.reagents)), nil, nil, nil, 1, 1, 1)
     tooltip:AddLine("Reagents Required:")
     local details = {}
+    local setEnchantVellum = false
     for _, rData in ipairs(recipeDetails.reagents) do
       local name = GetItemInfo(rData.items[1])
       if name ~= nil then
@@ -52,6 +53,7 @@ local function ShowInfo(tooltip)
         local vellumID = GetVellum(spellData)
         if vellumID ~= nil then
           table.insert(details, {name = GetItemInfo(vellumID) or "", quantity = 1, itemID = vellumID})
+          setEnchantVellum = true
         end
       end
     end
@@ -59,7 +61,11 @@ local function ShowInfo(tooltip)
     for _, nameAndQuantity in ipairs(details) do
       tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
     end
-    tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
+    if setEnchantVellum then
+      tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(1))
+    else
+      tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
+    end
     if Auctionator and Auctionator.API then
       tooltip:AddDoubleLine("Reagents Value:", WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(details)), true))
     end
