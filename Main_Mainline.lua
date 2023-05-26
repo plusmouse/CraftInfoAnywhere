@@ -43,14 +43,14 @@ local function ShowInfo(tooltip)
 
   if recipeDetails then 
     if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS) then
-      tooltip:AddLine("Reagents Required:")
+      tooltip:AddLine(CraftInfoAnywhere.Locales.REAGENTS_REQUIRED_COLON)
       local details = {}
       for _, rData in ipairs(recipeDetails.reagents) do
         local name = GetItemInfo(rData.items[1])
         if name ~= nil then
           table.insert(details, {name = name, quantity = rData.quantity})
         else
-          table.insert(details, {name = "Pending...", quantity = rData.quantity})
+          table.insert(details, {name = CraftInfoAnywhere.Locales.PENDING_ELLIPSE, quantity = rData.quantity})
         end
       end
       table.sort(details, function(a, b) return a.name < b.name end)
@@ -59,11 +59,11 @@ local function ShowInfo(tooltip)
       end
     end
     if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.MADE_COUNT) then
-      tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
+      tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.MAKES_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity)))
     end
     if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PRICES) then
       if Auctionator and Auctionator.API then
-        tooltip:AddDoubleLine("Reagents Value:", WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(recipeDetails.reagents)), true))
+        tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.REAGENTS_VALUE_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(recipeDetails.reagents)), true)))
       end
     end
   end

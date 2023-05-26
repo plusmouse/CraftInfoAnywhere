@@ -39,18 +39,15 @@ local function ShowInfo(tooltip)
     local setEnchantVellum = false
     for _, rData in ipairs(recipeDetails.reagents) do
       local name = GetItemInfo(rData.items[1])
-      if name ~= nil then
-        table.insert(details, {name = name, quantity = rData.quantity, itemID = rData.items[1]})
-      else
-        table.insert(details, {name = "Pending...", quantity = rData.quantity, itemID = rData.items[1]})
-      end
+      table.insert(details, {name = name or CraftInfoAnywhere.Locales.PENDING_ELLIPSE, quantity = rData.quantity, itemID = rData.items[1]})
     end
     if Auctionator and Auctionator.CraftingInfo.EnchantSpellsToItemData then
       local spellData = Auctionator.CraftingInfo.EnchantSpellsToItemData[recipeDetails.spell]
       if spellData then
         local vellumID = GetVellum(spellData)
         if vellumID ~= nil then
-          table.insert(details, {name = GetItemInfo(vellumID) or "", quantity = 1, itemID = vellumID})
+          local name = GetItemInfo(vellumID)
+          table.insert(details, {name = name or CraftInfoAnywhere.Locales.PENDING_ELLIPSE, quantity = 1, itemID = vellumID})
           setEnchantVellum = true
         end
       end
@@ -58,7 +55,7 @@ local function ShowInfo(tooltip)
 
     table.sort(details, function(a, b) return a.name < b.name end)
     if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS) then
-      tooltip:AddLine("Reagents Required:")
+      tooltip:AddLine(CraftInfoAnywhere.Locales.REAGENTS_REQUIRED_COLON)
       for _, nameAndQuantity in ipairs(details) do
         tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
       end
@@ -66,15 +63,15 @@ local function ShowInfo(tooltip)
 
     if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.MADE_COUNT) then
       if setEnchantVellum then
-        tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(1))
+        tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.MAKES_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(1)))
       else
-        tooltip:AddDoubleLine("Makes:", WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity))
+        tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.MAKES_COLON_X:format( WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity)))
       end
     end
 
     if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PRICES) then
       if Auctionator and Auctionator.API then
-        tooltip:AddDoubleLine("Reagents Value:", WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(details)), true))
+        tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.REAGENTS_VALUE_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(details)), true)))
       end
     end
   end
