@@ -3,9 +3,9 @@ CraftInfoAnywhere.SlashCmd = {}
 local function ToggleOption(option, label)
   CraftInfoAnywhere.Config.Set(option, not CraftInfoAnywhere.Config.Get(option))
   if CraftInfoAnywhere.Config.Get(option) then
-    print("Turned " .. label .. " on")
+    print("Turned " .. BLUE_FONT_COLOR:WrapTextInColorCode(label) .. " on")
   else
-    print("Turned " .. label .. " off")
+    print("Turned " .. BLUE_FONT_COLOR:WrapTextInColorCode(label) .. " off")
   end
 end
 
@@ -21,19 +21,16 @@ end
 
 local COMMANDS = {
   ["prices"] = CraftInfoAnywhere.SlashCmd.TogglePrices,
-  ["p"] = CraftInfoAnywhere.SlashCmd.TogglePrices,
   ["made"] = CraftInfoAnywhere.SlashCmd.ToggleMade,
   ["makes"] = CraftInfoAnywhere.SlashCmd.ToggleMade,
-  ["m"] = CraftInfoAnywhere.SlashCmd.ToggleMade,
   ["reagents"] = CraftInfoAnywhere.SlashCmd.ToggleReagents,
-  ["r"] = CraftInfoAnywhere.SlashCmd.ToggleReagents,
 }
 
 function CraftInfoAnywhere.SlashCmd.Handler(input)
   if COMMANDS[input] ~= nil then
     COMMANDS[input]()
   else
-    print("Unknown command '" .. input .. "'")
+    print(BLUE_FONT_COLOR:WrapTextInColorCode("/craftinfoanywhere") .. " Valid options are '" .. BLUE_FONT_COLOR:WrapTextInColorCode("prices") .. "' (toggle the reagents value line), '" .. BLUE_FONT_COLOR:WrapTextInColorCode("made") .. "' (toggle the makes amount line) and '" .. BLUE_FONT_COLOR:WrapTextInColorCode("reagents") .. "' (toggle the individual reagents needed to make the item lines")
   end
 end
 
