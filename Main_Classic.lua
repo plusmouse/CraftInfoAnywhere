@@ -35,7 +35,6 @@ local function ShowInfo(tooltip)
   local recipeDetails = CraftInfoAnywhere.Data[itemID]
 
   if recipeDetails then
-    --tooltip:AddDoubleLine("Basic Craft Cost", GetMoneyString(GetCost(recipeDetails.reagents)), nil, nil, nil, 1, 1, 1)
     local details = {}
     local setEnchantVellum = false
     for _, rData in ipairs(recipeDetails.reagents) do
