@@ -22,28 +22,28 @@ local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
 
 local L = Locales.deDE
---@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="deDE", format="lua_additive_table")@
 
 local L = Locales.ruRU
---@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="ruRU", format="lua_additive_table")@
 
 local L = Locales.esES
---@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="esES", format="lua_additive_table")@
 
 local L = Locales.esMX
---@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="esMX", format="lua_additive_table")@
 
 local L = Locales.zhTW
---@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="zhTW", format="lua_additive_table")@
 
 local L = Locales.zhCN
---@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="zhCN", format="lua_additive_table")@
 
 local L = Locales.koKR
---@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="koKR", format="lua_additive_table")@
 
 local L = Locales.itIT
---@localization(locale="frFR", format="lua_additive_table")@
+--@localization(locale="itIT", format="lua_additive_table")@
 
 CraftInfoAnywhere.Locales = CopyTable(Locales.enUS)
 for key, translation in pairs(Locales[GetLocale()]) do
