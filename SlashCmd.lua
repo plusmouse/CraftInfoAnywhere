@@ -18,12 +18,16 @@ end
 function CraftInfoAnywhere.SlashCmd.ToggleReagents()
   ToggleOption(CraftInfoAnywhere.Config.Options.REAGENTS, "reagents")
 end
+function CraftInfoAnywhere.SlashCmd.ToggleProfession()
+  ToggleOption(CraftInfoAnywhere.Config.Options.PROFESSION, "profession")
+end
 
 local COMMANDS = {
   ["prices"] = CraftInfoAnywhere.SlashCmd.TogglePrices,
   ["made"] = CraftInfoAnywhere.SlashCmd.ToggleMade,
   ["makes"] = CraftInfoAnywhere.SlashCmd.ToggleMade,
   ["reagents"] = CraftInfoAnywhere.SlashCmd.ToggleReagents,
+  ["profession"] = CraftInfoAnywhere.SlashCmd.ToggleProfession,
 }
 
 function CraftInfoAnywhere.SlashCmd.Handler(input)

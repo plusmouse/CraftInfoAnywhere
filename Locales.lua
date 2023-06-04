@@ -15,6 +15,7 @@ local Locales = {
 local L = Locales.enUS
 L["REAGENTS_VALUE_COLON_X"] = "Reagents Value: %s"
 L["REAGENTS_REQUIRED_COLON"] = "Reagents Required:"
+L["PROFESSION_X"] = "Profession: %s"
 L["MAKES_COLON_X"] = "Makes: %s"
 L["PENDING_ELLIPSE"] = "Pending..."
 

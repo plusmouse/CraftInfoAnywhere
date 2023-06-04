@@ -4,12 +4,14 @@ CraftInfoAnywhere.Config.Options = {
   REAGENTS = "reagents",
   PRICES = "prices",
   MADE_COUNT = "made_count",
+  PROFESSION = "profession",
 }
 
 CraftInfoAnywhere.Config.Defaults = {
   [CraftInfoAnywhere.Config.Options.PRICES] = true,
   [CraftInfoAnywhere.Config.Options.MADE_COUNT] = true,
   [CraftInfoAnywhere.Config.Options.REAGENTS] = true,
+  [CraftInfoAnywhere.Config.Options.PROFESSION] = true,
 }
 
 function CraftInfoAnywhere.Config.IsValidOption(name)
