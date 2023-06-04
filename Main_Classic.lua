@@ -32,7 +32,12 @@ local function ShowInfo(tooltip)
   end
   local itemID = GetItemInfoInstant(itemLink)
 
-  local recipeDetails = CraftInfoAnywhere.Data[itemID]
+  local possibleRecipes = CraftInfoAnywhere.Data.ItemsToRecipes[itemID]
+  if possibleRecipes == nil then
+    return
+  end
+
+  local recipeDetails = CraftInfoAnywhere.Data.Recipes[possibleRecipes[#possibleRecipes]]
 
   if recipeDetails then
     local details = {}

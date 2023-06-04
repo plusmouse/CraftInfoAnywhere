@@ -124,20 +124,18 @@ for spell_id in is_enchant:
 
 # Assumes spell_id in spell_to_item and spell_id in spell_to_reagents
 def reagents_details_str(spell_id):
-    item_ids = spell_to_item[spell_id]
     reagents = spell_to_reagents[spell_id]
     quantity = 1
     if spell_id in spell_to_quantity:
         quantity = spell_to_quantity[spell_id]
     result = ""
-    for item_id in item_ids:
-        result = result + "[" + str(item_id) + "]={spell=" + str(spell_id) + ",reagents={"
-        for slot in reagents:
-            result = result + "{items={"
-            for r in slot[0]:
-                result = result + str(r) + ","
-            result = result + "},quantity=" + str(slot[1]) + "},"
-        result = result + "},quantity=" + str(quantity) + "},"
+    result = result + "[" + str(spell_id ) + "]={reagents={"
+    for slot in reagents:
+        result = result + "{items={"
+        for r in slot[0]:
+            result = result + str(r) + ","
+        result = result + "},quantity=" + str(slot[1]) + "},"
+    result = result + "},quantity=" + str(quantity) + "},"
     return result
 
 ordered_spells = []
@@ -145,9 +143,30 @@ for spell_id in spell_to_reagents:
     if spell_id in spell_to_item:
         ordered_spells.append(spell_id)
 ordered_spells.sort()
-    
 
-print("CraftInfoAnywhere.Data = {")
+item_to_spells = {}
+ordered_items = []
+for spell_id in ordered_spells:
+    for item_id in spell_to_item[spell_id]:
+        if item_id not in item_to_spells:
+            item_to_spells[item_id] = []
+            ordered_items.append(item_id)
+        item_to_spells[item_id].append(spell_id)
+ordered_items.sort()
+
+def spells_list_str(item_id):
+    result = "[" + str(item_id) + "]={"
+    for spell_id in item_to_spells[item_id]:
+        result = result + str(spell_id) + ","
+    result = result + "},"
+    return result
+
+print("CraftInfoAnywhere.Data={}")
+print("CraftInfoAnywhere.Data.ItemsToRecipes={")
+for item_id in ordered_items:
+    print(spells_list_str(item_id))
+print("}")
+print("CraftInfoAnywhere.Data.Recipes={")
 for spell_id in ordered_spells:
     print(reagents_details_str(spell_id))
     #tmp = reagents_details_str(spell_id)
