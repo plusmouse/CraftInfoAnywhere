@@ -34,7 +34,7 @@ function CraftInfoAnywhere.SlashCmd.Handler(input)
   if COMMANDS[input] ~= nil then
     COMMANDS[input]()
   else
-    print(BLUE_FONT_COLOR:WrapTextInColorCode("/craftinfoanywhere") .. " Valid options are '" .. BLUE_FONT_COLOR:WrapTextInColorCode("prices") .. "' (toggle the reagents value line), '" .. BLUE_FONT_COLOR:WrapTextInColorCode("made") .. "' (toggle the makes amount line) and '" .. BLUE_FONT_COLOR:WrapTextInColorCode("reagents") .. "' (toggle the individual reagents needed to make the item lines")
+    print(BLUE_FONT_COLOR:WrapTextInColorCode("/craftinfoanywhere") .. " Valid options are '" .. BLUE_FONT_COLOR:WrapTextInColorCode("prices") .. "' (toggle the reagents value line), '" .. BLUE_FONT_COLOR:WrapTextInColorCode("made") .. "' (toggle the makes amount line), '" .. BLUE_FONT_COLOR:WrapTextInColorCode("reagents") .. "' (toggle the individual reagents needed to make the item lines) and '" .. BLUE_FONT_COLOR:WrapTextInColorCode("profession") .. "' (toggle the profession required line)")
   end
 end
 
