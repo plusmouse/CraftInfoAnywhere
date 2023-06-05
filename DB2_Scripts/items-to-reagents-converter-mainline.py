@@ -64,6 +64,25 @@ with open('SpellEffect.csv', newline='') as f:
                 if effect  == 53:
                     is_enchant[spell_id] = True
 
+spell_to_skill_line = {}
+
+with open('SkillLineAbility.csv', newline='') as f:
+    reader = csv.DictReader(f, delimiter=',')
+    for row in reader:
+        spell_id = int(row['Spell'])
+        skill_line_id = int(row['SkillLine'])
+        spell_to_skill_line[spell_id] = skill_line_id
+
+skill_line_to_prof_spell = {}
+
+with open('SkillLine.csv', newline='') as f:
+    reader = csv.DictReader(f, delimiter=',')
+    for row in reader:
+        spell_id = int(row['SpellBookSpellID'])
+        if spell_id != 0:
+            skill_line_id = int(row['ID'])
+            skill_line_to_prof_spell[skill_line_id] = spell_id
+
 spell_to_reagents = {}
 
 with open('SpellReagents.csv') as f:
@@ -125,6 +144,7 @@ for spell_id in is_enchant:
 # Assumes spell_id in spell_to_item and spell_id in spell_to_reagents
 def reagents_details_str(spell_id):
     reagents = spell_to_reagents[spell_id]
+    skill_line = spell_to_skill_line[spell_id]
     quantity = 1
     if spell_id in spell_to_quantity:
         quantity = spell_to_quantity[spell_id]
@@ -135,14 +155,29 @@ def reagents_details_str(spell_id):
         for r in slot[0]:
             result = result + str(r) + ","
         result = result + "},quantity=" + str(slot[1]) + "},"
-    result = result + "},quantity=" + str(quantity) + "},"
+    result = result + "},quantity=" + str(quantity) + ","
+    result = result + "skillLine=" + str(skill_line) + "},"
     return result
 
+seen_skill_lines = {}
+ordered_skill_lines = []
 ordered_spells = []
 for spell_id in spell_to_reagents:
-    if spell_id in spell_to_item:
-        ordered_spells.append(spell_id)
+    if spell_id in spell_to_item and spell_id in spell_to_skill_line:
+        if spell_id in spell_to_skill_line:
+            skill_line_id = spell_to_skill_line[spell_id]
+            if skill_line_id in skill_line_to_prof_spell:
+                ordered_spells.append(spell_id)
+                if skill_line_id not in seen_skill_lines:
+                    seen_skill_lines[skill_line_id] = True
+                    ordered_skill_lines.append(skill_line_id)
 ordered_spells.sort()
+ordered_skill_lines.sort()
+
+def skill_line_spell_str(skill_line_id):
+    result = "[" + str(skill_line_id) + "]=" + str(skill_line_to_prof_spell[skill_line_id]) + ","
+    return result
+
 
 item_to_spells = {}
 ordered_items = []
@@ -170,4 +205,8 @@ print("CraftInfoAnywhere.Data.Recipes={")
 for spell_id in ordered_spells:
     print(reagents_details_str(spell_id))
     #tmp = reagents_details_str(spell_id)
+print("}")
+print("CraftInfoAnywhere.Data.SkillLinesToSpells={")
+for spell_id in ordered_skill_lines:
+    print(skill_line_spell_str(spell_id))
 print("}")

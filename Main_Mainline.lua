@@ -46,6 +46,14 @@ local function ShowInfo(tooltip)
   local recipeDetails = CraftInfoAnywhere.Data.Recipes[possibleRecipes[#possibleRecipes]]
 
   if recipeDetails then 
+    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PROFESSION) then
+      local spellID = CraftInfoAnywhere.Data.SkillLinesToSpells[recipeDetails.skillLine]
+      if spellID ~= nil then
+        local name = GetSpellInfo(spellID) or CraftInfoAnywhere.Locales.PENDING_ELLIPSE
+        tooltip:AddLine(CraftInfoAnywhere.Locales.PROFESSION_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(name)))
+      end
+    end
+
     if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS) then
       tooltip:AddLine(CraftInfoAnywhere.Locales.REAGENTS_REQUIRED_COLON)
       local details = {}
