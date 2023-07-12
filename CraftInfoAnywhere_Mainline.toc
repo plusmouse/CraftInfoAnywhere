@@ -1,4 +1,4 @@
-## Interface: 100100
+## Interface: 100105
 ## Title: Craft Info Anywhere
 ## Notes: Shows the cost (more or less) of crafting an item and the minimum reagents
 ## Version: @project-version@
