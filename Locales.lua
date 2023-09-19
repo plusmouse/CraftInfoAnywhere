@@ -17,6 +17,7 @@ L["REAGENTS_VALUE_COLON_X"] = "Reagents Value: %s"
 L["REAGENTS_REQUIRED_COLON"] = "Reagents Required:"
 L["PROFESSION_X"] = "Profession: %s"
 L["MAKES_COLON_X"] = "Makes: %s"
+L["USED_IN_CRAFTING_COLON"] = "Used in Crafting:"
 L["PENDING_ELLIPSE"] = "Pending..."
 
 local L = Locales.frFR

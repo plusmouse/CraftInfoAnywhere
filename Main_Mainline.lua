@@ -40,43 +40,73 @@ local function ShowInfo(tooltip)
   local itemLevel = GetDetailedItemLevelInfo(itemLink)
   local itemID = GetItemInfoInstant(itemLink)
   local possibleRecipes = CraftInfoAnywhere.Data.ItemsToRecipes[itemID]
-  if possibleRecipes == nil then
-    return
-  end
-  local recipeDetails = CraftInfoAnywhere.Data.Recipes[possibleRecipes[#possibleRecipes]]
+  if possibleRecipes ~= nil then
+    local recipeDetails = CraftInfoAnywhere.Data.Recipes[possibleRecipes[#possibleRecipes]]
 
-  if recipeDetails then 
-    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PROFESSION) then
-      local spellID = CraftInfoAnywhere.Data.SkillLinesToSpells[recipeDetails.skillLine]
-      if spellID ~= nil then
-        local name = GetSpellInfo(spellID) or CraftInfoAnywhere.Locales.PENDING_ELLIPSE
-        tooltip:AddLine(CraftInfoAnywhere.Locales.PROFESSION_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(name)))
-      end
-    end
-
-    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS) then
-      tooltip:AddLine(CraftInfoAnywhere.Locales.REAGENTS_REQUIRED_COLON)
-      local details = {}
-      for _, rData in ipairs(recipeDetails.reagents) do
-        local name = GetItemInfo(rData.items[1])
-        if name ~= nil then
-          table.insert(details, {name = name, quantity = rData.quantity})
-        else
-          table.insert(details, {name = CraftInfoAnywhere.Locales.PENDING_ELLIPSE, quantity = rData.quantity})
+    if recipeDetails then 
+      if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PROFESSION) then
+        local spellID = CraftInfoAnywhere.Data.SkillLinesToSpells[recipeDetails.skillLine]
+        if spellID ~= nil then
+          local name = GetSpellInfo(spellID) or CraftInfoAnywhere.Locales.PENDING_ELLIPSE
+          tooltip:AddLine(CraftInfoAnywhere.Locales.PROFESSION_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(name)))
         end
       end
-      table.sort(details, function(a, b) return a.name < b.name end)
-      for _, nameAndQuantity in ipairs(details) do
-        tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
+
+      if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS) then
+        tooltip:AddLine(CraftInfoAnywhere.Locales.REAGENTS_REQUIRED_COLON)
+        local details = {}
+        for _, rData in ipairs(recipeDetails.reagents) do
+          local name = GetItemInfo(rData.items[1])
+          if name ~= nil then
+            table.insert(details, {name = name, quantity = rData.quantity})
+          else
+            table.insert(details, {name = CraftInfoAnywhere.Locales.PENDING_ELLIPSE, quantity = rData.quantity})
+          end
+        end
+        table.sort(details, function(a, b) return a.name < b.name end)
+        for _, nameAndQuantity in ipairs(details) do
+          tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
+        end
+      end
+      if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.MADE_COUNT) then
+        tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.MAKES_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity)))
+      end
+      if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PRICES) then
+        if Auctionator and Auctionator.API then
+          tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.REAGENTS_VALUE_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(recipeDetails.reagents)), true)))
+        end
       end
     end
-    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.MADE_COUNT) then
-      tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.MAKES_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity)))
-    end
-    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PRICES) then
-      if Auctionator and Auctionator.API then
-        tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.REAGENTS_VALUE_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(recipeDetails.reagents)), true)))
+  end
+
+  local itemsForReagents = CraftInfoAnywhere.Data.ReagentsToItems[itemID] or {}
+  local spellsForReagents = CraftInfoAnywhere.Data.ReagentsToSpells[itemID] or {}
+
+  if #itemsForReagents + #spellsForReagents > 0 and CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS_TO_ITEMS) then
+    tooltip:AddLine(CraftInfoAnywhere.Locales.USED_IN_CRAFTING_COLON)
+    local details = {}
+    for _, item_id in ipairs(itemsForReagents) do
+      local reagentQuality = C_TradeSkillUI.GetItemReagentQualityByItemInfo(item_id)
+      if reagentQuality == nil or reagentQuality == 1 then
+        local name = GetItemInfo(item_id)
+        if name ~= nil then
+          table.insert(details, name)
+        else
+          table.insert(details, CraftInfoAnywhere.Locales.PENDING_ELLIPSE)
+        end
       end
+    end
+    for _, spell_id in ipairs(spellsForReagents) do
+      local name = GetSpellInfo(spell_id)
+      if name ~= nil then
+        table.insert(details, name)
+      else
+        table.insert(details, CraftInfoAnywhere.Locales.PENDING_ELLIPSE)
+      end
+    end
+    table.sort(details)
+    for _, name in ipairs(details) do
+      tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(name))
     end
   end
 end

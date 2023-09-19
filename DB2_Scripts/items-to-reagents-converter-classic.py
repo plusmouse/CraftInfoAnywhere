@@ -25,14 +25,13 @@ with open('SpellReagents.csv') as f:
     reader = csv.DictReader(f, delimiter=',')
     for row in reader:
         spell_id = int(row['SpellID'])
-        if spell_id in spell_to_item:
-            reagents = []
-            for i in range(0, 8):
-                reagent_item_id = int(row['Reagent_' + str(i)])
-                reagent_quantity = int(row['ReagentCount_' + str(i)])
-                if reagent_item_id != 0 and reagent_quantity != 0:
-                    reagents.append(([reagent_item_id], reagent_quantity))
-            spell_to_reagents[spell_id] = reagents
+        reagents = []
+        for i in range(0, 8):
+            reagent_item_id = int(row['Reagent_' + str(i)])
+            reagent_quantity = int(row['ReagentCount_' + str(i)])
+            if reagent_item_id != 0 and reagent_quantity != 0:
+                reagents.append(([reagent_item_id], reagent_quantity))
+        spell_to_reagents[spell_id] = reagents
 
 spell_to_skill_line = {}
 skill_line_to_prof_spell = {}
@@ -92,9 +91,58 @@ ordered_spells.sort()
 ordered_items.sort()
 ordered_skill_lines.sort()
 
+reagents_to_items = {}
+reagents_to_spells_only = {}
+
+for spell in spell_to_skill_line:
+    if spell in spell_to_reagents:
+        reagents = spell_to_reagents[spell]
+        if spell in spell_to_item:
+            for item_id in spell_to_item[spell]:
+                for r in reagents:
+                    for reagent in r[0]:
+                        if reagent not in reagents_to_items:
+                            reagents_to_items[reagent] = []
+                        reagents_to_items[reagent].append(item_id)
+        else:
+            for r in reagents:
+                for reagent in r[0]:
+                    if reagent not in reagents_to_spells_only:
+                        reagents_to_spells_only[reagent] = []
+                    reagents_to_spells_only[reagent].append(spell)
+
+ordered_reagents = []
+for reagent in reagents_to_items:
+    reagents_to_items[reagent].sort()
+    ordered_reagents.append(reagent)
+ordered_reagents.sort()
+
+ordered_reagents_2 = []
+
+for reagent in reagents_to_spells_only:
+    reagents_to_spells_only[reagent].sort()
+    ordered_reagents_2.append(reagent)
+ordered_reagents_2.sort()
+
 def spells_list_str(item_id):
     result = "[" + str(item_id) + "]={"
     for spell_id in item_to_spells[item_id]:
+        result = result + str(spell_id) + ","
+    result = result + "},"
+    return result
+
+def reagent_to_items_str(reagent):
+    item_ids = reagents_to_items[reagent]
+    result = "[" + str(reagent) + "]={"
+    for item_id in item_ids:
+        result = result + str(item_id) + ","
+    result = result + "},"
+    return result
+
+def reagent_to_spells_str(reagent):
+    spell_ids = reagents_to_spells_only[reagent]
+    result = "[" + str(reagent) + "]={"
+    for spell_id in spell_ids:
         result = result + str(spell_id) + ","
     result = result + "},"
     return result
@@ -103,6 +151,14 @@ print("CraftInfoAnywhere.Data={}")
 print("CraftInfoAnywhere.Data.ItemsToRecipes={")
 for item_id in ordered_items:
     print(spells_list_str(item_id))
+print("}")
+print("CraftInfoAnywhere.Data.ReagentsToItems={")
+for reagent in ordered_reagents:
+    print(reagent_to_items_str(reagent))
+print("}")
+print("CraftInfoAnywhere.Data.ReagentsToSpells={")
+for reagent in ordered_reagents_2:
+    print(reagent_to_spells_str(reagent))
 print("}")
 print("CraftInfoAnywhere.Data.Recipes={")
 for spell_id in ordered_spells:
