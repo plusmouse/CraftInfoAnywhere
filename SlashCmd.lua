@@ -21,6 +21,9 @@ end
 function CraftInfoAnywhere.SlashCmd.ToggleProfession()
   ToggleOption(CraftInfoAnywhere.Config.Options.PROFESSION, "profession")
 end
+function CraftInfoAnywhere.SlashCmd.ToggleReagentsToItems()
+  ToggleOption(CraftInfoAnywhere.Config.Options.REAGENTS_TO_ITEMS, "reagents to items")
+end
 
 local COMMANDS = {
   ["prices"] = CraftInfoAnywhere.SlashCmd.TogglePrices,
@@ -28,13 +31,15 @@ local COMMANDS = {
   ["makes"] = CraftInfoAnywhere.SlashCmd.ToggleMade,
   ["reagents"] = CraftInfoAnywhere.SlashCmd.ToggleReagents,
   ["profession"] = CraftInfoAnywhere.SlashCmd.ToggleProfession,
+  ["reagents_to_items"] = CraftInfoAnywhere.SlashCmd.ToggleReagentsToItems,
+  ["rti"] = CraftInfoAnywhere.SlashCmd.ToggleReagentsToItems,
 }
 
 function CraftInfoAnywhere.SlashCmd.Handler(input)
   if COMMANDS[input] ~= nil then
     COMMANDS[input]()
   else
-    print(BLUE_FONT_COLOR:WrapTextInColorCode("/craftinfoanywhere") .. " Valid options are '" .. BLUE_FONT_COLOR:WrapTextInColorCode("prices") .. "' (toggle the reagents value line), '" .. BLUE_FONT_COLOR:WrapTextInColorCode("made") .. "' (toggle the makes amount line), '" .. BLUE_FONT_COLOR:WrapTextInColorCode("reagents") .. "' (toggle the individual reagents needed to make the item lines) and '" .. BLUE_FONT_COLOR:WrapTextInColorCode("profession") .. "' (toggle the profession required line)")
+    print(BLUE_FONT_COLOR:WrapTextInColorCode("/craftinfoanywhere") .. " Valid options are '" .. BLUE_FONT_COLOR:WrapTextInColorCode("prices") .. "' (toggle the reagents value line), '" .. BLUE_FONT_COLOR:WrapTextInColorCode("made") .. "' (toggle the makes amount line), '" .. BLUE_FONT_COLOR:WrapTextInColorCode("reagents") .. "' (toggle the individual reagents needed to make the item lines), '" .. BLUE_FONT_COLOR:WrapTextInColorCode("profession") .. "' (toggle the profession required line) and '" .. BLUE_FONT_COLOR:WrapTextInColorCode("reagents_to_items") .. "' (show the items created by a given reagent)")
   end
 end
 

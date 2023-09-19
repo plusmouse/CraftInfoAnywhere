@@ -33,59 +33,85 @@ local function ShowInfo(tooltip)
   local itemID = GetItemInfoInstant(itemLink)
 
   local possibleRecipes = CraftInfoAnywhere.Data.ItemsToRecipes[itemID]
-  if possibleRecipes == nil then
-    return
-  end
+  if possibleRecipes ~= nil then
+    local recipeDetails = CraftInfoAnywhere.Data.Recipes[possibleRecipes[#possibleRecipes]]
 
-  local recipeDetails = CraftInfoAnywhere.Data.Recipes[possibleRecipes[#possibleRecipes]]
-
-  if recipeDetails then
-    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PROFESSION) then
-      local spellID = CraftInfoAnywhere.Data.SkillLinesToSpells[recipeDetails.skillLine]
-      if spellID ~= nil then
-        local name = GetSpellInfo(spellID) or CraftInfoAnywhere.Locales.PENDING_ELLIPSE
-        tooltip:AddLine(CraftInfoAnywhere.Locales.PROFESSION_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(name)))
+    if recipeDetails then
+      if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PROFESSION) then
+        local spellID = CraftInfoAnywhere.Data.SkillLinesToSpells[recipeDetails.skillLine]
+        if spellID ~= nil then
+          local name = GetSpellInfo(spellID) or CraftInfoAnywhere.Locales.PENDING_ELLIPSE
+          tooltip:AddLine(CraftInfoAnywhere.Locales.PROFESSION_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(name)))
+        end
       end
-    end
 
-    local details = {}
-    local setEnchantVellum = false
-    for _, rData in ipairs(recipeDetails.reagents) do
-      local name = GetItemInfo(rData.items[1])
-      table.insert(details, {name = name or CraftInfoAnywhere.Locales.PENDING_ELLIPSE, quantity = rData.quantity, itemID = rData.items[1]})
-    end
-    if Auctionator and Auctionator.CraftingInfo.EnchantSpellsToItemData then
-      local spellData = Auctionator.CraftingInfo.EnchantSpellsToItemData[recipeDetails.spell]
-      if spellData then
-        local vellumID = GetVellum(spellData)
-        if vellumID ~= nil then
-          local name = GetItemInfo(vellumID)
-          table.insert(details, {name = name or CraftInfoAnywhere.Locales.PENDING_ELLIPSE, quantity = 1, itemID = vellumID})
-          setEnchantVellum = true
+      local details = {}
+      local setEnchantVellum = false
+      for _, rData in ipairs(recipeDetails.reagents) do
+        local name = GetItemInfo(rData.items[1])
+        table.insert(details, {name = name or CraftInfoAnywhere.Locales.PENDING_ELLIPSE, quantity = rData.quantity, itemID = rData.items[1]})
+      end
+      if Auctionator and Auctionator.CraftingInfo.EnchantSpellsToItemData then
+        local spellData = Auctionator.CraftingInfo.EnchantSpellsToItemData[recipeDetails.spell]
+        if spellData then
+          local vellumID = GetVellum(spellData)
+          if vellumID ~= nil then
+            local name = GetItemInfo(vellumID)
+            table.insert(details, {name = name or CraftInfoAnywhere.Locales.PENDING_ELLIPSE, quantity = 1, itemID = vellumID})
+            setEnchantVellum = true
+          end
+        end
+      end
+
+      table.sort(details, function(a, b) return a.name < b.name end)
+      if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS) then
+        tooltip:AddLine(CraftInfoAnywhere.Locales.REAGENTS_REQUIRED_COLON)
+        for _, nameAndQuantity in ipairs(details) do
+          tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
+        end
+      end
+
+      if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.MADE_COUNT) then
+        if setEnchantVellum then
+          tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.MAKES_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(1)))
+        else
+          tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.MAKES_COLON_X:format( WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity)))
+        end
+      end
+
+      if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PRICES) then
+        if Auctionator and Auctionator.API then
+          tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.REAGENTS_VALUE_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(details)), true)))
         end
       end
     end
+  end
 
-    table.sort(details, function(a, b) return a.name < b.name end)
-    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS) then
-      tooltip:AddLine(CraftInfoAnywhere.Locales.REAGENTS_REQUIRED_COLON)
-      for _, nameAndQuantity in ipairs(details) do
-        tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(nameAndQuantity.name) .. BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. nameAndQuantity.quantity))
-      end
-    end
+  local itemsForReagents = CraftInfoAnywhere.Data.ReagentsToItems[itemID] or {}
+  local spellsForReagents = CraftInfoAnywhere.Data.ReagentsToSpells[itemID] or {}
 
-    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.MADE_COUNT) then
-      if setEnchantVellum then
-        tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.MAKES_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(1)))
+  if #itemsForReagents + #spellsForReagents > 0 and CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.REAGENTS_TO_ITEMS) then
+    tooltip:AddLine(CraftInfoAnywhere.Locales.USED_IN_CRAFTING_COLON)
+    local details = {}
+    for _, item_id in ipairs(itemsForReagents) do
+      local name = GetItemInfo(item_id)
+      if name ~= nil then
+        table.insert(details, name)
       else
-        tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.MAKES_COLON_X:format( WHITE_FONT_COLOR:WrapTextInColorCode(recipeDetails.quantity)))
+        table.insert(details, CraftInfoAnywhere.Locales.PENDING_ELLIPSE)
       end
     end
-
-    if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PRICES) then
-      if Auctionator and Auctionator.API then
-        tooltip:AddDoubleLine(CraftInfoAnywhere.Locales.REAGENTS_VALUE_COLON_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(GetCraftCost(details)), true)))
+    for _, spell_id in ipairs(spellsForReagents) do
+      local name = GetSpellInfo(spell_id)
+      if name ~= nil then
+        table.insert(details, name)
+      else
+        table.insert(details, CraftInfoAnywhere.Locales.PENDING_ELLIPSE)
       end
+    end
+    table.sort(details)
+    for _, name in ipairs(details) do
+      tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(name))
     end
   end
 end
