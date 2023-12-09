@@ -12,3 +12,4 @@ SlashCmd.lua
 Config.lua
 Data_Wrath.lua
 Main_Classic.lua
+API.lua
