@@ -17,7 +17,7 @@ end
 local function GetCraftCost(details)
   local total = 0
   for _, entry in ipairs(details) do
-    local price = Auctionator.API.v1.GetAuctionPriceByItemID("Craft Info Anywhere", entry.itemID)
+    local price = Auctionator.API.v1.GetVendorPriceByItemID("Craft Info Anywhere", entry.itemID) or Auctionator.API.v1.GetAuctionPriceByItemID("Craft Info Anywhere", entry.itemID)
     if price then
       total = total + price * entry.quantity
     end
