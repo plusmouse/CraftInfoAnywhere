@@ -32,7 +32,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - uses: BigWigsMods/packager@v2
+    - uses: BigWigsMods/packager@master
       with:
         args: -p 865814 -a nGvppv6x -g ${{matrix.type}} -m ${{matrix.pkgmeta}}
       env:

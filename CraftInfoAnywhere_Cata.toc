@@ -6,6 +6,7 @@
 ## SavedVariables: CRAFT_INFO_ANYWHERE_CONFIG
 ## OptionalDeps: Auctionator
 
+
 Objects.lua
 Locales.lua
 SlashCmd.lua
