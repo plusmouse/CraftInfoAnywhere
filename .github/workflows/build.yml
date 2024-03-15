@@ -23,7 +23,8 @@ jobs:
             pkgmeta: .pkgmeta_wrath
           - type: classic
             pkgmeta: .pkgmeta_vanilla
-
+          - type: cata
+            pkgmeta: .pkgmeta_cata
 
     runs-on: ubuntu-latest
 
