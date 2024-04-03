@@ -1,4 +1,4 @@
-## Interface: 11501
+## Interface: 11502
 ## Title: Craft Info Anywhere
 ## Notes: Shows the reagents needed to craft an item
 ## Version: @project-version@
