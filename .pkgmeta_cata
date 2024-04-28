@@ -3,6 +3,6 @@ ignore:
   - DB2_Scripts
   - "*_Mainline*"
   - "*_Vanilla*"
-  - "*_Wrath*"
+  - "*_Wrath.lua"
 required-dependencies:
   - auctionator
