@@ -47,7 +47,8 @@ local function ShowInfo(tooltip)
       if CraftInfoAnywhere.Config.Get(CraftInfoAnywhere.Config.Options.PROFESSION) then
         local spellID = CraftInfoAnywhere.Data.SkillLinesToSpells[recipeDetails.skillLine]
         if spellID ~= nil then
-          local name = GetSpellInfo(spellID) or CraftInfoAnywhere.Locales.PENDING_ELLIPSE
+          local info = C_Spell.GetSpellInfo(spellID)
+          local name = info and info.name or CraftInfoAnywhere.Locales.PENDING_ELLIPSE
           tooltip:AddLine(CraftInfoAnywhere.Locales.PROFESSION_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(name)))
         end
       end
@@ -97,12 +98,8 @@ local function ShowInfo(tooltip)
       end
     end
     for _, spell_id in ipairs(spellsForReagents) do
-      local name = GetSpellInfo(spell_id)
-      if name ~= nil then
-        table.insert(details, name)
-      else
-        table.insert(details, CraftInfoAnywhere.Locales.PENDING_ELLIPSE)
-      end
+      local info = C_Spell.GetSpellInfo(spell_id)
+      local name = info and info.name or CraftInfoAnywhere.Locales.PENDING_ELLIPSE
     end
     table.sort(details)
     for _, name in ipairs(details) do
