@@ -1,4 +1,4 @@
-## Interface: 40400
+## Interface: 40401
 ## Title: Craft Info Anywhere
 ## Notes: Shows the reagents needed to craft an item
 ## Version: @project-version@
