@@ -1,0 +1,9 @@
+package-as: CraftInfoAnywhere
+ignore:
+  - DB2_Scripts
+  - "*_Mainline*"
+  - "*_Vanilla*"
+  - "*_Wrath*"
+  - "*_Cata*"
+required-dependencies:
+  - auctionator

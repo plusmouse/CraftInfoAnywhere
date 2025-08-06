@@ -1,0 +1,15 @@
+## Interface: 50500
+## Title: Craft Info Anywhere
+## Notes: Shows the reagents needed to craft an item
+## Version: @project-version@
+## Author: plusmouse
+## SavedVariables: CRAFT_INFO_ANYWHERE_CONFIG
+## OptionalDeps: Auctionator
+
+Objects.lua
+Locales.lua
+SlashCmd.lua
+Config.lua
+Data_Mists.lua
+Main_Classic.lua
+API.lua
